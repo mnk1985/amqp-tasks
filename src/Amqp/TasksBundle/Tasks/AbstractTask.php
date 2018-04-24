@@ -1,6 +1,6 @@
 <?php namespace App\Amqp\TasksBundle\Tasks;
 
-use App\Amqp\TasksBundle\Exception\NotFoundHandlerException;
+use App\Amqp\TasksBundle\Exception\NotFoundTaskHandlerException;
 
 abstract class AbstractTask implements TaskInterface
 {
@@ -12,7 +12,7 @@ abstract class AbstractTask implements TaskInterface
         $handlerClassName = $className.static::HANDLER_SUFFIX;
 
         if (!class_exists($handlerClassName)) {
-            throw new NotFoundHandlerException();
+            throw new NotFoundTaskHandlerException();
         }
 
         return new $handlerClassName;

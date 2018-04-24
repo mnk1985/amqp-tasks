@@ -1,3 +1,7 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+tasks-publish:
+    path: /tasks/publish
+    controller: App\Amqp\TasksBundle\Controller\TasksController::publishAction
+
+tasks-consume:
+    path: /tasks/consume
+    controller: App\Amqp\TasksBundle\Controller\TasksController::consumeAction

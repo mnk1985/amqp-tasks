@@ -2,6 +2,7 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
 
+
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -19,9 +20,34 @@ services:
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
-    App\Controller\:
-        resource: '../src/Controller'
+    App\Amqp\TasksBundle\Controller\:
+        resource: '../src/Amqp/TasksBundle/Controller'
         tags: ['controller.service_arguments']
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+
+
+
+    App\Amqp\TasksBundle\Registry\RegistryInterface:
+        public: true
+        alias: App\Amqp\TasksBundle\Registry\Registry
+
+    App\Amqp\TasksBundle\Manager\TaskManagerInterface:
+        public: true
+        alias: App\Amqp\TasksBundle\Drivers\RabbitMQ\RabbitMQManager
+
+    App\Amqp\TasksBundle\Drivers\RabbitMQ\Connection:
+        arguments:
+            $host: '%env(RABBITMQ_HOST)%'
+            $port: '%env(RABBITMQ_PORT)%'
+            $user: '%env(RABBITMQ_USER)%'
+            $password: '%env(RABBITMQ_PASSWORD)%'
+
+    App\Amqp\TasksBundle\Drivers\RabbitMQ\RabbitMQManager:
+        public: false
+
+    App\Amqp\TasksBundle\Registry\Registry:
+        public: false
+

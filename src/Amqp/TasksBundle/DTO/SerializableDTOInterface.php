@@ -3,5 +3,5 @@
 interface SerializableDTOInterface
 {
     public function convertToString(): string;
-    public function createFromString(string $data): self;
+    public static function createFromString(string $data): SerializableDTOInterface;
 }

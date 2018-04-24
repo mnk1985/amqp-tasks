@@ -1,7 +1,7 @@
-<?php namespace App\Amqp\TasksBundle\Services;
+<?php namespace App\Amqp\TasksBundle\Registry;
 
 use App\Amqp\TasksBundle\Exception\DublicateQueueNameException;
-use App\Amqp\TasksBundle\Registry\RegistryInterface;
+use App\Amqp\TasksBundle\Exception\NotFoundTaskException;
 use App\Amqp\TasksBundle\Tasks\TaskInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -26,7 +26,7 @@ class Registry implements RegistryInterface
     public function getTask(string $queueName): TaskInterface
     {
         if (!$this->tasks->containsKey($queueName)) {
-            throw new \InvalidArgumentException('queue with name '. $queueName. ' does not exist yet');
+            throw new NotFoundTaskException('queue with name '. $queueName. ' does not exist yet');
         }
 
         return $this->tasks->get($queueName);

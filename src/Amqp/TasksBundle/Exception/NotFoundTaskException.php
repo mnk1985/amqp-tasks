@@ -1,6 +1,6 @@
 <?php namespace App\Amqp\TasksBundle\Exception;
 
-class NotFoundHandlerException extends \Exception
+class NotFoundTaskException extends \Exception
 {
 
 }
