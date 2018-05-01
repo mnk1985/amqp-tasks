@@ -24,7 +24,7 @@
     },
     "autoload": {
         "psr-4": {
-            "AmqpTasks\\Bundle\\": ""
+            "AmqpTasksBundle\\": ""
         },
         "exclude-from-classmap": [
             "/Tests/"
