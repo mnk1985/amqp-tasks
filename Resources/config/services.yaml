@@ -1,0 +1,20 @@
+App\Amqp\TasksBundle\Registry\RegistryInterface:
+    public: true
+    alias: App\Amqp\TasksBundle\Registry\Registry
+
+App\Amqp\TasksBundle\Manager\TaskManagerInterface:
+    public: true
+    alias: App\Amqp\TasksBundle\Drivers\RabbitMQ\RabbitMQManager
+
+App\Amqp\TasksBundle\Drivers\RabbitMQ\Connection:
+    arguments:
+        $host: '%env(RABBITMQ_HOST)%'
+        $port: '%env(RABBITMQ_PORT)%'
+        $user: '%env(RABBITMQ_USER)%'
+        $password: '%env(RABBITMQ_PASSWORD)%'
+
+App\Amqp\TasksBundle\Drivers\RabbitMQ\RabbitMQManager:
+    public: false
+
+App\Amqp\TasksBundle\Registry\Registry:
+    public: false
