@@ -1,7 +1,7 @@
 ## Installation
 
 ```
-composer require mnk1985/amqp-tasks-bundle --dev
+composer require mnk1985/amqp-tasks-bundle
 ```
 
 ## Remarks
