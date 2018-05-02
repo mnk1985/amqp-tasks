@@ -10,8 +10,6 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
     protected $shouldBeExecuted = true;
     protected $verboseMode = false;
 
-    abstract protected function processConcrete($dto): bool;
-
     public function setVerboseMode(bool $verboseMode): void
     {
         $this->verboseMode = $verboseMode;
@@ -35,20 +33,5 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
         }
 
         return true;
-    }
-
-    /**
-     * @param $message
-     * @return bool
-     */
-    public function process($message): bool
-    {
-        $dto = TestDTO::createFromString($message);
-
-        if (!$dto instanceof SerializableDTOInterface) {
-            throw new InvalidDTOException();
-        }
-
-        return $this->processConcrete($dto);
     }
 }

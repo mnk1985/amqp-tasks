@@ -1,20 +1,23 @@
-AmqpTasksBundle\Registry\RegistryInterface:
-    public: true
-    alias: AmqpTasksBundle\Registry\Registry
+services:
+    AmqpTasksBundle\Registry\RegistryInterface:
+        public: true
+        alias: AmqpTasksBundle\Registry\Registry
 
-AmqpTasksBundle\Manager\TaskManagerInterface:
-    public: true
-    alias: AmqpTasksBundle\Drivers\RabbitMQ\RabbitMQManager
+    AmqpTasksBundle\Manager\TaskManagerInterface:
+        public: true
+        alias: AmqpTasksBundle\Drivers\RabbitMQ\RabbitMQManager
 
-AmqpTasksBundle\Drivers\RabbitMQ\Connection:
-    arguments:
-        $host: '%env(RABBITMQ_HOST)%'
-        $port: '%env(RABBITMQ_PORT)%'
-        $user: '%env(RABBITMQ_USER)%'
-        $password: '%env(RABBITMQ_PASSWORD)%'
+    AmqpTasksBundle\Drivers\RabbitMQ\Connection:
+        arguments:
+            $host: '%env(RABBITMQ_HOST)%'
+            $port: '%env(RABBITMQ_PORT)%'
+            $user: '%env(RABBITMQ_USER)%'
+            $password: '%env(RABBITMQ_PASSWORD)%'
 
-AmqpTasksBundle\Drivers\RabbitMQ\RabbitMQManager:
-    public: false
+    AmqpTasksBundle\Drivers\RabbitMQ\RabbitMQManager:
+        public: false
+        autowire: true
 
-AmqpTasksBundle\Registry\Registry:
-    public: false
+
+    AmqpTasksBundle\Registry\Registry:
+        public: false

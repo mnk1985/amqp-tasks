@@ -1,5 +1,6 @@
 <?php namespace AmqpTasksBundle;
 
+use AmqpTasksBundle\DependencyInjection\AmqpTasksExtension;
 use AmqpTasksBundle\DependencyInjection\Compiler\RegisterAmqpTasksPass;
 use AmqpTasksBundle\Tasks\TaskInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -14,5 +15,10 @@ class AmqpTasksBundle extends Bundle
         $container->addCompilerPass(new RegisterAmqpTasksPass());
 
         parent::build($container);
+    }
+
+    public function getContainerExtensionClass()
+    {
+        return AmqpTasksExtension::class;
     }
 }
