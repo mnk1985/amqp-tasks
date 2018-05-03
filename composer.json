@@ -54,6 +54,9 @@
         "symfony": {
             "id": "01CB6E1CBHF7FBJXK2X469J2E2",
             "allow-contrib": true
+        },
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
         }
     }
 }
