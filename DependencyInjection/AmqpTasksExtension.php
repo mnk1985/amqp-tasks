@@ -1,14 +1,11 @@
 <?php namespace AmqpTasksBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
-use Symfony\Component\DependencyInjection\Loader\DirectoryLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class AmqpTasksExtension extends Extension implements PrependExtensionInterface
+class AmqpTasksExtension extends Extension
 {
 
     /**
@@ -25,11 +22,4 @@ class AmqpTasksExtension extends Extension implements PrependExtensionInterface
         $loader->load('services.yaml');
     }
 
-    /**
-     * Allow an extension to prepend the extension configurations.
-     */
-    public function prepend(ContainerBuilder $container)
-    {
-        // TODO: Implement prepend() method.
-    }
 }
