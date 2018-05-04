@@ -22,7 +22,7 @@ class TestTask extends AbstractTask
 }
 ```
 
-TaskHandler (should implement TaskhandlerInterface or extend AbstractTask) - here you can process your tasks. if it's processed successfully - return true, otherwise - false
+TaskHandler (should implement TaskhandlerInterface or extend AbstractTask) - here you can process your tasks. if it's processed successfully - return true, otherwise - false (only processed tasks removed from queue)
 ```php
 <?php namespace App\Test;
 
@@ -32,7 +32,7 @@ use AmqpTasksBundle\Tasks\AbstractTaskHandler;
 class TestTaskHandler extends AbstractTaskHandler
 {
 
-    public function process($message): bool
+    public function process(string $message): bool
     {
         $dto = TestDTO::createFromString($message);
 
