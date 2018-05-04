@@ -1,6 +1,6 @@
 <?php namespace AmqpTasksBundle\Exception;
 
-class DublicateQueueNameException extends \InvalidArgumentException
+class DublicateQueueNameException extends \InvalidArgumentException implements ExceptionInterface
 {
 
 }

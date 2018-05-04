@@ -17,4 +17,6 @@ abstract class AbstractTask implements TaskInterface
 
         return new $handlerClassName;
     }
+
+
 }

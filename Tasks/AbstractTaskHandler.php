@@ -10,6 +10,18 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
     protected $shouldBeExecuted = true;
     protected $verboseMode = false;
 
+    abstract protected function processConcrete(SerializableDTOInterface $dto): bool;
+
+    /**
+     * @var SerializableDTOInterface
+     */
+    private $DTO;
+
+    public function __construct(SerializableDTOInterface $DTO)
+    {
+        $this->DTO = $DTO;
+    }
+
     public function setVerboseMode(bool $verboseMode): void
     {
         $this->verboseMode = $verboseMode;
@@ -33,5 +45,16 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
         }
 
         return true;
+    }
+
+    /**
+     * @param string $message
+     * @return SerializableDTOInterface
+     */
+    public function process(string $message): bool
+    {
+        $dto = $this->DTO->createFromString($message);
+
+        return $this->processConcrete($dto);
     }
 }
