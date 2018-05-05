@@ -73,6 +73,7 @@ class RabbitMQManager extends AbstractManager
 
         $callback = function ($msg) use ($taskHandler) {
             $taskHandler->process($msg->body);
+            $taskHandler->printOutput($msg->body);
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
         };
         $consumeOptions = array_merge($this->defaultConsumeOptions, $options);

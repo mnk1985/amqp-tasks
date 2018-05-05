@@ -18,6 +18,9 @@ services:
         public: false
         autowire: true
 
-
     AmqpTasksBundle\Registry\Registry:
         public: false
+
+    AmqpTasksBundle\Command\RunTaskWorker:
+        public: false
+        tags: [console.command]

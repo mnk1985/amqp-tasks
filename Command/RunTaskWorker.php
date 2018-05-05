@@ -13,7 +13,7 @@ class RunTaskWorker extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('app:run-worker')
+            ->setName('amqp_tasks:run-worker')
             ->addArgument(
                 'queueName',
                 InputArgument::REQUIRED,
@@ -23,7 +23,7 @@ class RunTaskWorker extends ContainerAwareCommand
                 'iterations',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Override default iterations count'
+                'Override default(0) iterations count'
             );
     }
 

@@ -1,6 +1,6 @@
 ## Installation
 
-```
+```console
 composer require mnk1985/amqp-tasks-bundle
 ```
 
@@ -22,7 +22,8 @@ class TestTask extends AbstractTask
 }
 ```
 
-TaskHandler (should implement TaskhandlerInterface or extend AbstractTask) - here you can process your tasks. if it's processed successfully - return true, otherwise - false (only processed tasks removed from queue)
+TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false (only processed tasks removed from queue)
+
 ```php
 <?php namespace App\Test;
 
@@ -113,6 +114,18 @@ class TestDTO implements SerializableDTOInterface
 }
 ```
 
+console command for processing tasks. 
+
+```console
+./bin/console amqp_tasks:run-worker test_queue --verbose --iterations=100 --env=dev
+```
+without --verbose task payload won't be outputted (to console screen or supervisor log)
+--iterations=0 (by default) makes worker running "forever" (you may set it to 100. when task is executed as times as iterations is defined, will die, but supervisord will alive it again)
 
 ## Remarks
 This code is still under development, and no release is yet ready. Please be patient.
+
+## TODO
+- add command for running supervisor
+- add configuration
+- refactor rabbitmq configs

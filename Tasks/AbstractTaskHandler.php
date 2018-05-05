@@ -34,4 +34,11 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
 
         return true;
     }
+
+    public function printOutput(string $message): void
+    {
+        if($this->verboseMode) {
+            echo $message.PHP_EOL;
+        }
+    }
 }

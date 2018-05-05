@@ -7,4 +7,5 @@ interface TaskHandlerInterface
     public function setVerboseMode(bool $verboseMode): void;
     public function setIterationsCount(int $iterCount): void;
     public function shouldBeExecuted(): bool;
+    public function printOutput(string $message): void;
 }
