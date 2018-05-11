@@ -126,6 +126,5 @@ without --verbose task payload won't be outputted (to console screen or supervis
 This code is still under development, and no release is yet ready. Please be patient.
 
 ## TODO
-- add command for running supervisor
 - add configuration
 - refactor rabbitmq configs
