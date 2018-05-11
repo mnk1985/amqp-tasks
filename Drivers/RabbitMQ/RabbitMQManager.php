@@ -1,5 +1,9 @@
 <?php namespace AmqpTasksBundle\Drivers\RabbitMQ;
 
+use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\ConsumeOptionsFactory;
+use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\MessageOptionsFactory;
+use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\PrefetchOptionsFactory;
+use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\QueueOptionsFactory;
 use AmqpTasksBundle\DTO\SerializableDTOInterface;
 use AmqpTasksBundle\Manager\AbstractManager;
 use AmqpTasksBundle\Registry\Registry;
@@ -9,30 +13,6 @@ use PhpAmqpLib\Message\AMQPMessage;
 class RabbitMQManager extends AbstractManager
 {
     private const EXCHANGE = '';
-    protected $iterationsCount = 0;
-    protected $shouldBeExecuted = true;
-
-    private $defaultConsumeOptions = [
-        'consumerTag' => '',
-        'noLocal' => false,
-        'noAck' => false,
-        'exclusive' => false,
-        'nowait' => false,
-    ];
-    private $defaultMessageOptions = [
-        'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
-    ];
-    private $defaultQueueOptions = [
-        'passive' => false,
-        'durable' => true,
-        'exclusive' => false,
-        'autoDelete' => false,
-    ];
-    private $defaultPrefetchOptions = [
-        'size' => null,
-        'count' => 1,
-        'global' => null
-    ];
 
     /**
      * @var Connection
@@ -50,18 +30,20 @@ class RabbitMQManager extends AbstractManager
         $channel = $this->connection->channel();
         $task = $this->taskRegistry->getTask($queueName);
 
-        $messageOptions = array_merge($this->defaultMessageOptions, $options);
-        $queueOptions = array_merge($this->defaultQueueOptions, $options);
+        $messageOptions = MessageOptionsFactory::create($options);
+        $queueOptions = QueueOptionsFactory::create($options);
 
         $channel->queue_declare(
             $task->getQueueName(),
-            $queueOptions['passive'],
-            $queueOptions['durable'],
-            $queueOptions['exclusive'],
-            $queueOptions['autoDelete']
+            $queueOptions->isPassive(),
+            $queueOptions->isDurable(),
+            $queueOptions->isExclusive(),
+            $queueOptions->isAutoDelete()
         );
 
-        $msg = new AMQPMessage($data->convertToString(), $messageOptions);
+        $msg = new AMQPMessage($data->convertToString(), [
+            'delivery_mode' => $messageOptions->getDeliveryMode()
+        ]);
 
         $channel->basic_publish($msg, self::EXCHANGE, $task->getQueueName());
         $channel->close();
@@ -69,42 +51,52 @@ class RabbitMQManager extends AbstractManager
 
     protected function consumeConcrete(string $queueName, TaskHandlerInterface $taskHandler, $options = [])
     {
+        $channel = $this->getConsumeChannel($queueName, $taskHandler, $options);
+
+        while (count($channel->callbacks) && $taskHandler->shouldBeExecuted()) {
+            $channel->wait();
+        }
+        $channel->close();
+    }
+
+    private function getConsumeChannel(string $queueName, TaskHandlerInterface $taskHandler, $options)
+    {
         $channel = $this->connection->channel();
+
+        $consumeOptions = ConsumeOptionsFactory::create($options);
+        $queueOptions = QueueOptionsFactory::create($options);
+        $prefetchOptions = PrefetchOptionsFactory::create($options);
+
+        $channel->queue_declare(
+            $queueName,
+            $queueOptions->isPassive(),
+            $queueOptions->isDurable(),
+            $queueOptions->isExclusive(),
+            $queueOptions->isAutoDelete()
+        );
+
+        $channel->basic_qos(
+            $prefetchOptions->getSize(),
+            $prefetchOptions->getCount(),
+            $prefetchOptions->isGlobal()
+        );
 
         $callback = function ($msg) use ($taskHandler) {
             $taskHandler->process($msg->body);
             $taskHandler->printOutput($msg->body);
             $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
         };
-        $consumeOptions = array_merge($this->defaultConsumeOptions, $options);
-        $queueOptions = array_merge($this->defaultQueueOptions, $options);
 
-        $channel->queue_declare(
-            $queueName,
-            $queueOptions['passive'],
-            $queueOptions['durable'],
-            $queueOptions['exclusive'],
-            $queueOptions['autoDelete']
-        );
-
-        $channel->basic_qos(
-            $this->defaultPrefetchOptions['size'],
-            $this->defaultPrefetchOptions['count'],
-            $this->defaultPrefetchOptions['global']
-        );
         $channel->basic_consume(
             $queueName,
-            $consumeOptions['consumerTag'],
-            $consumeOptions['noLocal'],
-            $consumeOptions['noAck'],
-            $consumeOptions['exclusive'],
-            $consumeOptions['nowait'],
+            $consumeOptions->getConsumerTag(),
+            $consumeOptions->isNoLocal(),
+            $consumeOptions->isNoAck(),
+            $consumeOptions->isExclusive(),
+            $consumeOptions->isNoWait(),
             $callback
         );
-        while (count($channel->callbacks) && $taskHandler->shouldBeExecuted()) {
-            $channel->wait();
-        }
-        $channel->close();
+        return $channel;
     }
 
 }
