@@ -31,7 +31,7 @@ class TestTask extends AbstractTask
 }
 ```
 
-TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false (only processed tasks removed from queue)
+TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false
 
 ```php
 <?php namespace App\Test;
@@ -138,4 +138,3 @@ This code is still under development, and no release is yet ready. Please be pat
 
 ## TODO
 - add driver configuration
-- refactor rabbitmq configs
