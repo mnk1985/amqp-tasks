@@ -4,6 +4,15 @@
 composer require mnk1985/amqp-tasks-bundle
 ```
 
+add RabbitMQ connection details to .env file. e.g.
+
+```
+RABBITMQ_HOST=localhost
+RABBITMQ_PORT=5672
+RABBITMQ_USER=guest
+RABBITMQ_PASSWORD=guest
+```
+
 ## Examples
 
 Task (should implement TaskInterface or extend AbstractTask). getQueueName should return real queue name used to store/retrieve data from queue driver

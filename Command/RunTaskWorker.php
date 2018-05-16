@@ -23,7 +23,19 @@ class RunTaskWorker extends ContainerAwareCommand
                 'iterations',
                 null,
                 InputOption::VALUE_OPTIONAL,
-                'Override default(0) iterations count'
+                'Amount of jobs to process'
+            )
+            ->addOption(
+                'attempts',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Max amount of tries to process job'
+            )
+            ->addOption(
+                'delay',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                'Retry delay (between attempts) in seconds'
             );
     }
 
@@ -53,7 +65,16 @@ class RunTaskWorker extends ContainerAwareCommand
         $options = [];
 
         if ($input->getOption('iterations')) {
+            // TODO: replace array with DTO
             $options['iterations'] = $input->getOption('iterations');
+        }
+
+        if ($input->getOption('attempts')) {
+            $options['attempts'] = $input->getOption('attempts');
+        }
+
+        if ($input->getOption('delay')) {
+            $options['delay'] = $input->getOption('delay');
         }
 
         if ($input->getOption('verbose')) {

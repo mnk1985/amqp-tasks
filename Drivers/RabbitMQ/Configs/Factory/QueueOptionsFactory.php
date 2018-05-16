@@ -9,19 +9,23 @@ class QueueOptionsFactory
         $queueOptions = new QueueOptions();
 
         if (!empty($options['exclusive'])){
-            $queueOptions->setExclusive((bool)$options['exclusive']);
+            $queueOptions->exclusive = (bool)$options['exclusive'];
         }
 
         if (!empty($options['passive'])){
-            $queueOptions->setPassive((bool)$options['passive']);
+            $queueOptions->passive = (bool)$options['passive'];
         }
 
         if (!empty($options['durable'])){
-            $queueOptions->setDurable((bool)$options['durable']);
+            $queueOptions->durable = (bool)$options['durable'];
         }
 
         if (!empty($options['autoDelete'])){
-            $queueOptions->setAutoDelete((bool)$options['autoDelete']);
+            $queueOptions->autoDelete = (bool)$options['autoDelete'];
+        }
+
+        if (!empty($options['nowait'])){
+            $queueOptions->nowait = (bool)$options['nowait'];
         }
 
         return $queueOptions;

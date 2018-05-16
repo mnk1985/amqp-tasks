@@ -29,12 +29,22 @@ abstract class AbstractManager implements TaskManagerInterface
         $taskHandler = $task->getHandler();
 
         if (isset($options['iterations']) && $options['iterations'] >= 0) {
-            $taskHandler->setIterationsCount($options['iterations']);
+            $taskHandler->getConfig()->setIterationsCount($options['iterations']);
             unset($options['iterations']);
         }
 
+        if (isset($options['attempts']) && $options['attempts'] >= 0) {
+            $taskHandler->getConfig()->setMaxAttemptsCount($options['attempts']);
+            unset($options['attempts']);
+        }
+
+        if (isset($options['delay']) && $options['delay'] >= 0) {
+            $taskHandler->getConfig()->setDelay($options['delay']);
+            unset($options['delay']);
+        }
+
         if (isset($options['verbose'])) {
-            $taskHandler->setVerboseMode(true);
+            $taskHandler->getConfig()->setVerboseMode(true);
             unset($options['verbose']);
         }
 

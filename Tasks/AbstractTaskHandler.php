@@ -6,29 +6,22 @@ use AmqpTasksBundle\Exception\InvalidDTOException;
 
 abstract class AbstractTaskHandler implements TaskHandlerInterface
 {
-    protected $iterationsCount = 0;
     protected $shouldBeExecuted = true;
-    protected $verboseMode = false;
 
-    public function setVerboseMode(bool $verboseMode): void
-    {
-        $this->verboseMode = $verboseMode;
-    }
-
-    public function setIterationsCount(int $iterCount): void
-    {
-        $this->iterationsCount = $iterCount;
-    }
+    /**
+     * @var TaskHandlerConfigInterface
+     */
+    protected $config;
 
     public function shouldBeExecuted(): bool
     {
-        if ($this->iterationsCount < 0) return false;
+        if ($this->getConfig()->getIterationsCount() < 0) return false;
         if (!$this->shouldBeExecuted) return false;
-        if ($this->iterationsCount === 0) return true;
+        if ($this->getConfig()->getIterationsCount() === 0) return true;
 
-        $this->iterationsCount--;
+        $this->getConfig()->setIterationsCount($this->getConfig()->getIterationsCount()-1);
 
-        if ($this->iterationsCount === 0) {
+        if ($this->getConfig()->getIterationsCount() === 0) {
             $this->shouldBeExecuted = false;
         }
 
@@ -37,8 +30,34 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
 
     public function printOutput(string $message): void
     {
-        if($this->verboseMode) {
+        if($this->getConfig()->isVerboseMode()) {
             echo $message.PHP_EOL;
         }
     }
+
+    public function getConfig(): TaskHandlerConfigInterface
+    {
+        // TODO: get service from container
+        if (!$this->config) {
+            $this->config = new TaskHandlerConfig();
+        }
+
+        return $this->config;
+    }
+
+    public function setConfig(TaskHandlerConfigInterface $config)
+    {
+        $this->config = $config;
+    }
+
+    public function shouldRetry(?int $deathCount): bool
+    {
+        return $deathCount < $this->getConfig()->getMaxAttemptsCount();
+    }
+
+    public function getDelay(): int
+    {
+        return $this->getConfig()->getDelay();
+    }
+
 }
