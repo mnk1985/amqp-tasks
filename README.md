@@ -126,10 +126,12 @@ class TestDTO implements SerializableDTOInterface
 console command for processing tasks. 
 
 ```console
-./bin/console amqp_tasks:run-worker test_queue --verbose --iterations=100 --env=dev
+./bin/console amqp_tasks:run-worker test_queue --verbose --iterations=100 --attempts=2 --delay=1 --env=dev
 ```
 without --verbose task payload won't be outputted (to console screen or supervisor log)
 --iterations=0 (by default) makes worker running "forever" (you may set it to 100. when task is executed as times as iterations is defined, will die, but supervisord will alive it again)
+--attempts=2 - make another try if fist processing failed
+--delay - delay in seconds when retry after fail
 
 ## Remarks
 This code is still under development, and no release is yet ready. Please be patient.
