@@ -9,23 +9,23 @@ class ConsumeOptionsFactory
         $consumeOptions = new ConsumeOptions();
 
         if (!empty($options['consumerTag'])){
-            $consumeOptions->consumerTag = $options['consumerTag'];
+            $consumeOptions->setConsumerTag($options['consumerTag']);
         }
 
         if (!empty($options['noLocal'])){
-            $consumeOptions->noLocal = (bool)$options['noLocal'];
+            $consumeOptions->setNoLocal((bool)$options['noLocal']);
         }
 
         if (!empty($options['noAck'])){
-            $consumeOptions->noAck = (bool)$options['noAck'];
+            $consumeOptions->setNoAck((bool)$options['noAck']);
         }
 
         if (!empty($options['noWait'])){
-            $consumeOptions->noWait = (bool)$options['noWait'];
+            $consumeOptions->setNoWait((bool)$options['noWait']);
         }
 
         if (!empty($options['exclusive'])){
-            $consumeOptions->exclusive = (bool)$options['exclusive'];
+            $consumeOptions->setExclusive((bool)$options['exclusive']);
         }
 
         return $consumeOptions;

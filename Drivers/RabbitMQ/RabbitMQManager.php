@@ -36,14 +36,14 @@ class RabbitMQManager extends AbstractManager
 
         $channel->queue_declare(
             $task->getQueueName(),
-            $queueOptions->passive,
-            $queueOptions->durable,
-            $queueOptions->exclusive,
-            $queueOptions->autoDelete
+            $queueOptions->isPassive(),
+            $queueOptions->isDurable(),
+            $queueOptions->isExclusive(),
+            $queueOptions->isAutoDelete()
         );
 
         $msg = new AMQPMessage($data->convertToString(), [
-            'delivery_mode' => $messageOptions->deliveryMode
+            'delivery_mode' => $messageOptions->getDeliveryMode()
         ]);
 
         $channel->basic_publish($msg, self::EXCHANGE, $task->getQueueName());
@@ -87,10 +87,10 @@ class RabbitMQManager extends AbstractManager
 
         $channel->queue_declare(
             $queueName,
-            $queueOptions->passive,
-            $queueOptions->durable,
-            $queueOptions->exclusive,
-            $queueOptions->autoDelete
+            $queueOptions->isPassive(),
+            $queueOptions->isDurable(),
+            $queueOptions->isExclusive(),
+            $queueOptions->isAutoDelete()
         );
         $channel->exchange_declare($exchangeRightNow,'direct');
         $channel->queue_bind($queueName, $exchangeRightNow);
@@ -99,11 +99,11 @@ class RabbitMQManager extends AbstractManager
 
         $channel->queue_declare(
             $queueNameDelayed,
-            $queueOptions->passive,
-            $queueOptions->durable,
-            $queueOptions->exclusive,
-            $queueOptions->autoDelete,
-            $queueOptions->nowait,
+            $queueOptions->isPassive(),
+            $queueOptions->isDurable(),
+            $queueOptions->isExclusive(),
+            $queueOptions->isAutoDelete(),
+            $queueOptions->isNowait(),
             array(
                 'x-message-ttl' => array('I', $taskHandler->getDelay() * 1000), //convert to miliseconds
                 "x-expires" => array("I", $taskHandler->getDelay() * 1000 + 1000),
@@ -127,16 +127,16 @@ class RabbitMQManager extends AbstractManager
 
         $channel->queue_declare(
             $queueName,
-            $queueOptions->passive,
-            $queueOptions->durable,
-            $queueOptions->exclusive,
-            $queueOptions->autoDelete
+            $queueOptions->isPassive(),
+            $queueOptions->isDurable(),
+            $queueOptions->isExclusive(),
+            $queueOptions->isAutoDelete()
         );
 
         $channel->basic_qos(
-            $prefetchOptions->size,
-            $prefetchOptions->count,
-            $prefetchOptions->global
+            $prefetchOptions->getSize(),
+            $prefetchOptions->getCount(),
+            $prefetchOptions->isGlobal()
         );
 
         $callback = function ($msg) use ($taskHandler, $queueName) {
@@ -153,11 +153,11 @@ class RabbitMQManager extends AbstractManager
 
         $channel->basic_consume(
             $queueName,
-            $consumeOptions->consumerTag,
-            $consumeOptions->noLocal,
-            $consumeOptions->noAck,
-            $consumeOptions->exclusive,
-            $consumeOptions->noWait,
+            $consumeOptions->getConsumerTag(),
+            $consumeOptions->isNoLocal(),
+            $consumeOptions->isNoAck(),
+            $consumeOptions->isExclusive(),
+            $consumeOptions->isNoWait(),
             $callback
         );
         return $channel;

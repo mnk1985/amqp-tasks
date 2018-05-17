@@ -9,15 +9,15 @@ class PrefetchOptionsFactory
         $prefetchOptions = new PrefetchOptions();
 
         if (!empty($options['size'])){
-            $prefetchOptions->size = $options['size'];
+            $prefetchOptions->setSize($options['size']);
         }
 
         if (!empty($options['count'])){
-            $prefetchOptions->count = $options['count'];
+            $prefetchOptions->setCount($options['count']);
         }
 
         if (!empty($options['global'])){
-            $prefetchOptions->global = (bool)$options['global'];
+            $prefetchOptions->setGlobal((bool)$options['global']);
         }
 
         return $prefetchOptions;

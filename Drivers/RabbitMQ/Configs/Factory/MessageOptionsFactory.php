@@ -9,7 +9,7 @@ class MessageOptionsFactory
         $messageOptions = new MessageOptions();
 
         if (!empty($options['delivery_mode'])){
-            $messageOptions->deliveryMode = $options['delivery_mode'];
+            $messageOptions->setDeliveryMode($options['delivery_mode']);
         }
 
         return $messageOptions;

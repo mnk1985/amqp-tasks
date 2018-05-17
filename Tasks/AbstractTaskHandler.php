@@ -37,7 +37,6 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
 
     public function getConfig(): TaskHandlerConfigInterface
     {
-        // TODO: get service from container
         if (!$this->config) {
             $this->config = new TaskHandlerConfig();
         }
