@@ -4,10 +4,8 @@ use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\ConsumeOptionsFactory;
 use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\MessageOptionsFactory;
 use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\PrefetchOptionsFactory;
 use AmqpTasksBundle\Drivers\RabbitMQ\Configs\Factory\QueueOptionsFactory;
-use AmqpTasksBundle\DTO\SerializableDTOInterface;
 use AmqpTasksBundle\Manager\AbstractManager;
 use AmqpTasksBundle\Registry\Registry;
-use AmqpTasksBundle\Tasks\TaskHandlerInterface;
 use AmqpTasksBundle\Tasks\TaskInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -30,7 +28,7 @@ class RabbitMQManager extends AbstractManager
     public function publish(string $queueName, $dto, array $options = [])
     {
         $channel = $this->connection->channel();
-        $task = $this->taskRegistry->getTask($queueName);
+        $task = $this->getRegistry()->getTask($queueName);
 
         $messageOptions = MessageOptionsFactory::create($options);
         $queueOptions = QueueOptionsFactory::create($options);
@@ -96,7 +94,7 @@ class RabbitMQManager extends AbstractManager
         $channel->exchange_declare($exchangeRightNow,'direct');
         $channel->queue_bind($queueName, $exchangeRightNow);
 
-        $taskHandler = $this->taskRegistry->getTask($queueName)->getHandler();
+        $taskHandler = $this->getRegistry()->getTask($queueName)->getHandler();
 
         $channel->queue_declare(
             $queueNameDelayed,

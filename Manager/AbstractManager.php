@@ -2,6 +2,7 @@
 
 use AmqpTasksBundle\Exception\NotFoundQueueException;
 use AmqpTasksBundle\Registry\Registry;
+use AmqpTasksBundle\Registry\RegistryInterface;
 use AmqpTasksBundle\Tasks\TaskHandlerInterface;
 use AmqpTasksBundle\Tasks\TaskInterface;
 
@@ -49,5 +50,10 @@ abstract class AbstractManager implements TaskManagerInterface
         }
 
         return $this->consumeConcrete($queueName, $task, $options);
+    }
+
+    public function getRegistry(): RegistryInterface
+    {
+        return $this->taskRegistry;
     }
 }

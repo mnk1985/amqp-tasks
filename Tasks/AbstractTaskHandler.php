@@ -1,6 +1,6 @@
 <?php namespace AmqpTasksBundle\Tasks;
 
-use AmqpTasksBundle\DTO\SerializableDTOInterface;
+use AmqpTasksBundle\DTO\DTOSerializerInterface;
 use AmqpTasksBundle\DTO\TestDTO;
 use AmqpTasksBundle\Exception\InvalidDTOException;
 

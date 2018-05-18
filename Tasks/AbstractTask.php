@@ -1,6 +1,6 @@
 <?php namespace AmqpTasksBundle\Tasks;
 
-use AmqpTasksBundle\DTO\SerializableDTOInterface;
+use AmqpTasksBundle\DTO\DTOSerializerInterface;
 use AmqpTasksBundle\Exception\NotFoundTaskHandlerException;
 
 abstract class AbstractTask implements TaskInterface
@@ -13,7 +13,7 @@ abstract class AbstractTask implements TaskInterface
     private $handler;
 
     /**
-     * @var SerializableDTOInterface
+     * @var DTOSerializerInterface
      */
     private $dtoSerializer;
 
@@ -39,7 +39,7 @@ abstract class AbstractTask implements TaskInterface
         $this->handler = $handler;
     }
 
-    public function setDTOSerializer(SerializableDTOInterface $serializer)
+    public function setDTOSerializer(DTOSerializerInterface $serializer)
     {
         $this->dtoSerializer = $serializer;
     }

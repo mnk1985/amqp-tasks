@@ -1,6 +1,6 @@
 <?php namespace AmqpTasksBundle\DTO;
 
-interface SerializableDTOInterface
+interface DTOSerializerInterface
 {
     public function convertToString($dto): string;
     public function createDTO(string $data);
