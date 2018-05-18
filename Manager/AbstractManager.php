@@ -17,7 +17,7 @@ abstract class AbstractManager implements TaskManagerInterface
         $this->taskRegistry = $taskRegistry;
     }
 
-    abstract protected function consumeConcrete(string $queueName, TaskHandlerInterface $handler, $options);
+    abstract protected function consumeConcrete(string $queueName, TaskInterface $task, $options);
 
     public function consume(string $queueName, array $options = [])
     {
@@ -48,6 +48,6 @@ abstract class AbstractManager implements TaskManagerInterface
             unset($options['verbose']);
         }
 
-        return $this->consumeConcrete($queueName, $taskHandler, $options);
+        return $this->consumeConcrete($queueName, $task, $options);
     }
 }

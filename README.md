@@ -31,7 +31,7 @@ class TestTask extends AbstractTask
 }
 ```
 
-TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false
+TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false. The convention is that handler comes with 'Handler' suffix to task name (e.g. from TestTask we get TestTaskHandler, but it can be overwritten via TestTask::setHandler)
 
 ```php
 <?php namespace App\Test;
@@ -138,5 +138,4 @@ This code is still under development, and no release is yet ready. Please be pat
 
 ## TODO
 - add driver configuration
-
-
+- move printOutput to separate class

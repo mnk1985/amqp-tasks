@@ -2,6 +2,6 @@
 
 interface SerializableDTOInterface
 {
-    public function convertToString(): string;
-    public static function createFromString(string $data): SerializableDTOInterface;
+    public function convertToString($dto): string;
+    public function createDTO(string $data);
 }

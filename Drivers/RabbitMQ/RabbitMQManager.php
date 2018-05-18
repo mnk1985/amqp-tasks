@@ -8,6 +8,7 @@ use AmqpTasksBundle\DTO\SerializableDTOInterface;
 use AmqpTasksBundle\Manager\AbstractManager;
 use AmqpTasksBundle\Registry\Registry;
 use AmqpTasksBundle\Tasks\TaskHandlerInterface;
+use AmqpTasksBundle\Tasks\TaskInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 
@@ -26,7 +27,7 @@ class RabbitMQManager extends AbstractManager
         $this->connection = $connection;
     }
 
-    public function publish(string $queueName, SerializableDTOInterface $data, array $options = [])
+    public function publish(string $queueName, $dto, array $options = [])
     {
         $channel = $this->connection->channel();
         $task = $this->taskRegistry->getTask($queueName);
@@ -42,7 +43,7 @@ class RabbitMQManager extends AbstractManager
             $queueOptions->isAutoDelete()
         );
 
-        $msg = new AMQPMessage($data->convertToString(), [
+        $msg = new AMQPMessage($task->getDTOSerializer()->convertToString($dto), [
             'delivery_mode' => $messageOptions->getDeliveryMode()
         ]);
 
@@ -50,11 +51,11 @@ class RabbitMQManager extends AbstractManager
         $channel->close();
     }
 
-    protected function consumeConcrete(string $queueName, TaskHandlerInterface $taskHandler, $options = [])
+    protected function consumeConcrete(string $queueName, TaskInterface $task, $options = [])
     {
-        $channel = $this->getConsumeChannel($queueName, $taskHandler, $options);
+        $channel = $this->getConsumeChannelWithCallback($queueName, $task, $options);
 
-        while (count($channel->callbacks) && $taskHandler->shouldBeExecuted()) {
+        while (count($channel->callbacks) && $task->getHandler()->shouldBeExecuted()) {
             $channel->wait();
         }
         $channel->close();
@@ -117,7 +118,7 @@ class RabbitMQManager extends AbstractManager
         $channel->close();
     }
 
-    private function getConsumeChannel(string $queueName, TaskHandlerInterface $taskHandler, $options)
+    private function getConsumeChannelWithCallback(string $queueName, TaskInterface $task, $options)
     {
         $channel = $this->connection->channel();
 
@@ -139,8 +140,9 @@ class RabbitMQManager extends AbstractManager
             $prefetchOptions->isGlobal()
         );
 
-        $callback = function ($msg) use ($taskHandler, $queueName) {
-            if ($taskHandler->process($msg->body)) {
+        $callback = function ($msg) use ($task, $queueName) {
+            $taskHandler = $task->getHandler();
+            if ($taskHandler->process($task->getDTOSerializer()->createDTO($msg->body))) {
                 $taskHandler->printOutput('processed: '. $msg->body);
             } elseif ($taskHandler->shouldRetry($this->getDeathCount($msg))) {
                 $taskHandler->printOutput('republishing: '. $msg->body);
