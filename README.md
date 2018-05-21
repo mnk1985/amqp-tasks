@@ -13,9 +13,19 @@ RABBITMQ_USER=guest
 RABBITMQ_PASSWORD=guest
 ```
 
+## Base components:
+- Task - stores queue name in the underlying queue system, knows its handler and dto serializer
+- DTO - data structure which stores all the data we need to pass in order to be able to process job asynchronously (e.g. to make async search we can pass some filter details)
+- DTOSerializer - is an object which can transform dto to string and vice versa
+- TaskHandler - receives dto and does processing (any components can be injected if needed)
+
+UML class diagram may be helpful for visualization
+![](Resources/img/uml.png)
+
+
 ## Examples
 
-Task (should implement TaskInterface or extend AbstractTask). getQueueName should return real queue name used to store/retrieve data from queue driver. getDTOSerializer returns serializer specific to your task
+Task (should implement TaskInterface or extend AbstractTask). getQueueName should return real queue name used to store/retrieve data from queue driver. TestTask::getDTOSerializer returns specific to your task serializer.  TestTask::getHandler returns task's handler. The convention is that handler comes with 'Handler' suffix to task name (e.g. from TestTask we get TestTaskHandler, but it can be overwritten via TestTask::setHandler) 
 ```php
 <?php namespace App\Tasks\Test;
 
@@ -36,7 +46,7 @@ class TestTask extends AbstractTask
 }
 ```
 
-TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false. The convention is that handler comes with 'Handler' suffix to task name (e.g. from TestTask we get TestTaskHandler, but it can be overwritten via TestTask::setHandler)
+TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false.
 
 ```php
 <?php namespace App\Tasks\Test;

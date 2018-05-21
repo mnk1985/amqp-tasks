@@ -1,0 +1,1 @@
+all docs are placed in README.md (from bundle's root directory)
