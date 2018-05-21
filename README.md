@@ -13,6 +13,8 @@ RABBITMQ_USER=guest
 RABBITMQ_PASSWORD=guest
 ```
 
+**Note:** As long as you are on Symfony Flex you are done. If not, you have to do some extra things, like registering the bundle in your `AppKernel` class.
+
 ## Base components:
 - Task - stores queue name in the underlying queue system, knows its handler and dto serializer
 - DTO - data structure which stores all the data we need to pass in order to be able to process job asynchronously (e.g. to make async search we can pass some filter details)
