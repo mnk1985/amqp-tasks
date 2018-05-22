@@ -1,4 +1,4 @@
-<?php namespace AmqpTasksBundle\Tasks;
+<?php namespace AmqpTasksBundle\Tasks\Config;
 
 interface TaskHandlerConfigInterface
 {

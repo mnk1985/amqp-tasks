@@ -1,8 +1,9 @@
 <?php namespace AmqpTasksBundle\Tasks;
 
-use AmqpTasksBundle\DTO\DTOSerializerInterface;
-use AmqpTasksBundle\DTO\TestDTO;
-use AmqpTasksBundle\Exception\InvalidDTOException;
+use AmqpTasksBundle\Tasks\Config\TaskHandlerConfig;
+use AmqpTasksBundle\Tasks\Config\TaskHandlerConfigInterface;
+use AmqpTasksBundle\Tasks\Printer\Printer;
+use AmqpTasksBundle\Tasks\Printer\PrinterInterface;
 
 abstract class AbstractTaskHandler implements TaskHandlerInterface
 {
