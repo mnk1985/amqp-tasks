@@ -6,8 +6,8 @@ interface TaskInterface
 {
     public function getQueueName(): string;
     public function getHandler(): TaskHandlerInterface;
-    public function setHandler(TaskHandlerInterface $handler);
+    public function setHandler(TaskHandlerInterface $handler): void;
     public function getDTOSerializer(): DTOSerializerInterface;
-    public function setDTOSerializer(DTOSerializerInterface $serializer);
+    public function setDTOSerializer(DTOSerializerInterface $serializer): void;
 
 }

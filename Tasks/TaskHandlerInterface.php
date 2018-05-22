@@ -10,6 +10,4 @@ interface TaskHandlerInterface
     public function shouldRetry(?int $deathCount): bool;
     public function getDelay(): int;
 
-    public function getConfig(): TaskHandlerConfigInterface;
-    public function setConfig(TaskHandlerConfigInterface $config);
 }

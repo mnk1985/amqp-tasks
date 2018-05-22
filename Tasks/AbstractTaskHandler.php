@@ -11,7 +11,12 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
     /**
      * @var TaskHandlerConfigInterface
      */
-    protected $config;
+    private $config;
+
+    /**
+     * @var PrinterInterface
+     */
+    private $printer;
 
     public function shouldBeExecuted(): bool
     {
@@ -31,7 +36,7 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
     public function printOutput(string $message): void
     {
         if($this->getConfig()->isVerboseMode()) {
-            echo $message.PHP_EOL;
+            $this->getPrinter()->print($message);
         }
     }
 
@@ -44,7 +49,7 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
         return $this->config;
     }
 
-    public function setConfig(TaskHandlerConfigInterface $config)
+    public function setConfig(TaskHandlerConfigInterface $config): void
     {
         $this->config = $config;
     }
@@ -57,6 +62,20 @@ abstract class AbstractTaskHandler implements TaskHandlerInterface
     public function getDelay(): int
     {
         return $this->getConfig()->getDelay();
+    }
+
+    public function getPrinter(): PrinterInterface
+    {
+        if (!$this->printer) {
+            $this->printer = new Printer();
+        }
+
+        return $this->printer;
+    }
+
+    public function setPrinter(PrinterInterface $printer): void
+    {
+        $this->printer = $printer;
     }
 
 }

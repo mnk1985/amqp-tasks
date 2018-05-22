@@ -5,7 +5,7 @@ interface TaskHandlerConfigInterface
     public function setVerboseMode(bool $verboseMode): void;
     public function isVerboseMode(): bool;
 
-    public function setIterationsCount(int $iterCount): void;
+    public function setIterationsCount(int $iterationsCount): void;
     public function getIterationsCount(): int;
 
     public function setMaxAttemptsCount(int $attemptsCount);

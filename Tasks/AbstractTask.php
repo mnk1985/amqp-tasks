@@ -34,12 +34,12 @@ abstract class AbstractTask implements TaskInterface
 
     }
 
-    public function setHandler(TaskHandlerInterface $handler)
+    public function setHandler(TaskHandlerInterface $handler): void
     {
         $this->handler = $handler;
     }
 
-    public function setDTOSerializer(DTOSerializerInterface $serializer)
+    public function setDTOSerializer(DTOSerializerInterface $serializer): void
     {
         $this->dtoSerializer = $serializer;
     }
