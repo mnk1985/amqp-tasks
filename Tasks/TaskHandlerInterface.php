@@ -3,7 +3,7 @@
 
 interface TaskHandlerInterface
 {
-    public function process(string $message): bool;
+    public function process($message): bool;
 
     public function printOutput(string $message): void;
     public function shouldBeExecuted(): bool;

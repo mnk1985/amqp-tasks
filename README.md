@@ -62,7 +62,7 @@ class TestTaskHandler extends AbstractTaskHandler
      * @param TestDTO $message
      * @return bool
      */
-    public function process($dto): bool
+    public function process(string $dto): bool
     {
         if (!$dto instanceof TestDTO) {
             throw new InvalidDTOException();
@@ -123,21 +123,31 @@ Serializer should implement DTOSerializerInterface (with 2 methods - convert to 
 <?php namespace App\Tasks\Test;
 
 use AmqpTasksBundle\DTO\DTOSerializerInterface;
+use AmqpTasksBundle\Exception\InvalidDTOException;
 
 class DTOSerializer implements DTOSerializerInterface
 {
     /**
-     * @param TestDTO $dto
-     * @return string
-     */
-    public function convertToString($dto): string
-    {
-        $fields = [
-            'fieldA' => $dto->getFieldA(),
-            'fieldB' => $dto->getFieldB(),
-        ];
-        return json_encode($fields);
-    }
+         * @param array $dto
+         * @return string
+         */
+        public function convertToString($dto): string
+        {
+            if (!is_array($dto)) {
+                throw new InvalidDTOException('dto should be array');
+            }
+    
+            $dto = new TestDTO(
+                $dto['a'] ?? null,
+                $dto['b'] ?? null
+            );
+    
+            $fields = [
+                'fieldA' => $dto->getFieldA(),
+                'fieldB' => $dto->getFieldB(),
+            ];
+            return json_encode($fields);
+        }
 
     /**
      * @param string $data
@@ -166,9 +176,3 @@ without --verbose task payload won't be outputted (to console screen or supervis
 --attempts=2 - make another try if fist processing failed
 --delay - delay in seconds when retry after fail
 
-## Remarks
-This code is still under development, and no release is yet ready. Please be patient.
-
-## TODO
-- add driver configuration
-- move printOutput to separate class
