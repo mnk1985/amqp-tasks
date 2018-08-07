@@ -29,16 +29,18 @@ UML class diagram may be helpful for visualization
 
 Task (should implement TaskInterface or extend AbstractTask). getQueueName should return real queue name used to store/retrieve data from queue driver. TestTask::getDTOSerializer returns specific to your task serializer.  TestTask::getHandler returns task's handler. The convention is that handler comes with 'Handler' suffix to task name (e.g. from TestTask we get TestTaskHandler, but it can be overwritten via TestTask::setHandler) 
 ```php
-<?php namespace App\Tasks\Test;
+<?php namespace App\Tasks;
 
 use AmqpTasksBundle\DTO\DTOSerializerInterface;
 use AmqpTasksBundle\Tasks\AbstractTask;
 
 class TestTask extends AbstractTask
 {
+    private const QUEUE_NAME = 'test_queue';
+
     public function getQueueName(): string
     {
-        return 'test_queue';
+        return self::QUEUE_NAME;
     }
 
     public function getDTOSerializer(): DTOSerializerInterface
@@ -51,7 +53,7 @@ class TestTask extends AbstractTask
 TaskHandler (should implement TaskhandlerInterface or extend AbstractTaskHandler) - here you can process your task. if it's processed successfully - return true, otherwise - false.
 
 ```php
-<?php namespace App\Tasks\Test;
+<?php namespace App\Tasks;
 
 use AmqpTasksBundle\Exception\InvalidDTOException;
 use AmqpTasksBundle\Tasks\AbstractTaskHandler;
@@ -80,7 +82,7 @@ class TestTaskHandler extends AbstractTaskHandler
 
 Object that gets passed via queue for async processing 
 ```php
-<?php namespace App\Tasks\Test;
+<?php namespace App\Tasks;
 
 class TestDTO
 {
@@ -120,7 +122,7 @@ class TestDTO
 ```
 Serializer should implement DTOSerializerInterface (with 2 methods - convert to string and from string) 
 ```php
-<?php namespace App\Tasks\Test;
+<?php namespace App\Tasks;
 
 use AmqpTasksBundle\DTO\DTOSerializerInterface;
 use AmqpTasksBundle\Exception\InvalidDTOException;
@@ -166,13 +168,52 @@ class DTOSerializer implements DTOSerializerInterface
 }
 ```
 
+and controller which will trigger publishing/consuming
+```php
+<?php namespace App\Controller;
+
+use AmqpTasksBundle\Manager\TaskManagerInterface;
+use App\Tasks\TestTask;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+class TasksController extends Controller
+{
+    /**
+     * @Route("/tasks/publish", name="publish")
+     */
+    public function publishAction(TaskManagerInterface $manager, TestTask $task)
+    {
+        $manager->publish($task->getQueueName(), ['a' => 1, 'b' => 2]);
+
+        return new Response('published');
+    }
+
+    /**
+     * @Route("/tasks/consume", name="consume")
+     */
+    public function consumeAction(TaskManagerInterface $manager, TestTask $task)
+    {
+        $manager->consume($task->getQueueName(), [
+            'iterations' => 1,
+            'attempts' => 2,
+            'delay' => 1,
+            'verbose' => false,
+        ]);
+
+        return new Response('consumed');
+    }
+}
+```
+
 console command for processing tasks. 
 
 ```console
 ./bin/console amqp_tasks:run-worker test_queue --verbose --iterations=100 --attempts=2 --delay=1 --env=dev
 ```
 without --verbose task payload won't be outputted (to console screen or supervisor log)
---iterations=0 (by default) makes worker running "forever" (you may set it to 100. when task is executed as times as iterations is defined, will die, but supervisord will alive it again)
+--iterations=0 (by default) makes worker running "forever" (you may set it to 100. when task is executed as times as iterations are defined, will die, but supervisord will alive it again)
 --attempts=2 - make another try if fist processing failed
 --delay - delay in seconds when retry after fail
 
